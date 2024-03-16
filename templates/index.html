@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Remover</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.4/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .drop-zone {
+            border: 2px dashed transparent;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #48bb78;
+        }
+
+        .drop-prompt {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .drop-prompt.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="container mx-auto p-8 bg-white shadow-lg rounded-lg">
+        <h1 class="text-2xl font-bold text-center mb-4">Background Remover</h1>
+        <form id="uploadForm" class="flex flex-col items-center drop-zone" action="/" method="post" enctype="multipart/form-data">
+            <input id="fileInput" name="file" type="file" class="block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-sm file:font-semibold
+            file:bg-violet-50 file:text-violet-700
+            hover:file:bg-violet-100"/>
+            <button type="submit" class="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Remove BG</button>
+            <div id="dropPrompt" class="drop-prompt">
+                Drop image here
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('#uploadForm');
+            var fileInput = document.querySelector('#fileInput');
+            var dropPrompt = document.querySelector('#dropPrompt');
+
+            document.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var dt = e.dataTransfer;
+                var files = dt.files;
+                if (files.length) {
+                    fileInput.files = files;
+                    form.submit();
+                }
+                dropPrompt.classList.remove('show');
+            });
+
+            document.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropPrompt.classList.add('show');
+            });
+
+            form.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropPrompt.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>
